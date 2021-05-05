@@ -1,122 +1,173 @@
 import React from 'react'
+
 import ProdutoService from '../../app/produtoService'
-import NavBar from '../../components/Navbar'
+import { withRouter } from 'react-router-dom'
+import NavBar from '../../components/Navbar';
 
-const estadoInicial  = {
-       nome: '', 
-       sku: '',
-       descricao: '', 
-       preco: 0,
-       fornecedor: '',
-       sucesso: false,}
+const estadoInicial = {
+    nome: '',
+    sku: '',
+    descricao: '',
+    preco: 0,
+    fornecedor: '',
+    sucesso: false,
+    errors: [],
+    atualizando : false
+}
 
-export default class CadastroProduto extends React.Component{
-   state={estadoInicial}
+class CadastroProduto extends React.Component {
 
-       constructor(){
-           super()
-           this.service  = new ProdutoService(); // instancia de produtoService
-       }
+    state = estadoInicial;
 
-       onChange = (event) =>{
-           const valor = event.target.value
-           const nomeCampo = event.target.name
-           this.setState({ [nomeCampo]: valor })
-       }
+    constructor(){
+        super()
+        this.service = new ProdutoService();
+    }
 
-       onSubmit = (event) =>{
-          const produto = {
-              nome : this.state.nome, 
-              sku : this.state.sku,
-              descricao : this.state.descricao,
-              preco: this.state.preco
-          }
-          this.service.salvar(produto)
-          this.limparCampos()
-          this.setState({sucesso:true})
-       }
-       limparCampos = () =>{
-           this.setState(estadoInicial)
-       }
+    onChange = (event) => {
+        const valor = event.target.value
+        const nomeDoCampo = event.target.name
+        this.setState({ [nomeDoCampo]: valor  })
+    }
+
+    onSubmit = (event) => {
+        event.preventDefault();
+        const produto = {
+            nome: this.state.nome,
+            sku: this.state.sku,
+            descricao: this.state.descricao,
+            preco: this.state.preco,
+            fornecedor: this.state.fornecedor
+        }
+        try{
+            this.service.salvar(produto)
+            this.limpaCampos()
+            this.setState({ sucesso: true})
+        }catch(erro){
+            const errors = erro.errors
+            this.setState({errors : errors})
+        }
+        
+    }
+
+    limpaCampos = () => {
+        this.setState(estadoInicial)
+    }
+
+    
     render(){
         return(
-            <div className="container">
+            <>
             <NavBar/>
             <div class="card mb-3">
                 <div class="card-header">Cadastro de produto</div>
                 <div class="card-body">
-                    
-                {this.state.sucesso &&
-                 <div class="alert alert-dismissible alert-success">
-                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                 <p class="mb-0">Cadastro realizado com sucesso.</p>
-                 </div>}
-               
+                <form id="frmProduto" onSubmit={this.onSubmit} >
 
-                   <div className="row">
-                       <div className="col-md-6">
-                           <div className="form-group">
-                                <label>Nome do produto: *</label>
-                                <input type="text"
-                                onChange={this.onChange}
-                                 className="form-control"
-                                 value={this.state.nome}
-                                 name="nome"/>
-                           </div>
-                       </div>
-                       <div className="col-md-6">
-                            <div className="form-group">
-                                <label>SKU: *</label>
-                                <input type="text"
-                                onChange={this.onChange}
-                                 className="form-control"
-                                 value={this.state.sku}
-                                 name="sku"/>
+                    { this.state.sucesso && 
+                        
+                            <div class="alert alert-dismissible alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong>Sucesso!</strong> Cadastro realizado!.
                             </div>
-                       </div>
-                   </div>
-                   <div className="row">
-                       <div className="col-md-12">
-                         <div className="form-group">
-                            <label>Descrição: </label>
-                            <textarea 
-                            onChange={this.onChange}
-                            className="form-control"
-                            value={this.state.descricao}
-                            name="descricao"/>
-                        </div>
-                       </div>
-                   </div>
-                   <div className="row">
-                       <div className="col-md-6">
-                           <label>Preço: *</label>
-                           <input className="form-control"
-                           onChange={this.onChange}
-                           value={this.state.preco}
-                           name="preco"/>
-                       </div>
-                       <div className="col-md-6">
-                           <label>Fornecedor: *</label>
-                           <input className="form-control"
-                           onChange={this.onChange}
-                           value={this.state.fornecedor}
-                           name="fornecedor"/>
-                       </div>
+                        
+                    }      
 
-                   </div>
-                   <div className="row">
-                       <div className="col-md-1">
-                           <button 
-                           className="btn btn-success mt-2"
-                           onClick={this.onSubmit}>Salvar</button>
-                       </div>
-                       <div className="col-md-1">
-                           <button className="btn btn-primary mt-2" onClick={this.limparCampos}>Limpar</button>
-                       </div>
-                   </div>
-                </div>
-            </div>
-            </div>
+                    { this.state.errors.length > 0 &&
+                        
+                        this.state.errors.map( msg => {
+                            return (
+                                <div class="alert alert-dismissible alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <strong>Erro!</strong> {msg}
+                                </div>
+                            )
+                        })                       
+                        
+                    }                
+                        
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Nome: *</label>
+                                    <input type="text" 
+                                        name="nome" 
+                                        onChange={this.onChange}
+                                        value={this.state.nome} 
+                                        className="form-control" />
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>SKU: *</label>
+                                    <input type="text"  
+                                            name="sku" 
+                                            disabled={this.state.atualizando}
+                                            onChange={this.onChange}
+                                            value={this.state.sku} 
+                                            className="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="form-group">
+                                    <label>Descrição:</label>
+                                    <textarea name="descricao" 
+                                            onChange={this.onChange}
+                                            value={this.state.descricao} 
+                                            className="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Preço: *</label>
+                                    <input value={this.state.preco}
+                                        onChange={this.onChange} 
+                                        name="preco" 
+                                        type="text" 
+                                        className="form-control" />
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Fornecedor: *</label>
+                                    <input type="text"  
+                                        name="fornecedor" 
+                                        onChange={this.onChange} 
+                                        value={this.state.fornecedor} 
+                                        className="form-control" />
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div className="row">
+                            <div className="col-md-1">
+                                <button type="submit" className="btn btn-success" >
+                                    Salvar
+                                </button>
+                            </div>
+
+                            <div className="col-md-1">
+                                <button onClick={this.limpaCampos} className="btn btn-primary" >Limpar</button>
+                            </div>
+                        </div>
+                        
+                    </form>
+                    </div>
+                    </div>
+                    
+          </>
         )
     }
+
 }
+
+export default CadastroProduto;
