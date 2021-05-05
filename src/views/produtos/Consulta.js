@@ -1,7 +1,9 @@
 import React from 'react'
 import NavBar from '../../components/Navbar'
 import ProdutoService from '../../app/produtoService'
-export default class ConsultaProdutos extends React.Component{
+
+import { withRouter } from 'react-router-dom'
+ class ConsultaProdutos extends React.Component{
     state ={
         produtos:[]
     }
@@ -13,9 +15,15 @@ export default class ConsultaProdutos extends React.Component{
         const produtos = this.service.obterProdutos();
         this.setState({produtos})
     }
+
+    preparaEditar = ( sku ) =>{
+        //O history permite que haja navegação 
+        //dentro do componente para outras rootas
+        this.props.history.push(`/cadastro/${sku}`)
+
+    }
     
     render(){
-        console.log(this.state.produtos)
         return(
             <>
             <NavBar/>
@@ -43,6 +51,10 @@ export default class ConsultaProdutos extends React.Component{
                                     <td>{produto.descricao}</td>
                                     <td>{produto.preco}</td>
                                     <td>{produto.fornecedor}</td>
+                                    <td>
+                                        <button onClick={ () => this.preparaEditar(produto.sku)} className="btn btn-primary">Editar</button>
+                                        <button className="btn btn-danger">Remover</button>
+                                    </td>
                                 </tr>
                             )
                             }
@@ -55,3 +67,5 @@ export default class ConsultaProdutos extends React.Component{
         )
     }
 }
+
+export default withRouter(ConsultaProdutos)
