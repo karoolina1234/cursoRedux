@@ -31,7 +31,13 @@ export default class ProdutoService {
     }
 
  
-
+    obterProdutos = () =>{
+        const produtos = localStorage.getItem(PRODUTOS)
+        if(!produtos){
+            return [];
+        }
+        return JSON.parse(produtos)
+    }
 
     salvar = (produto) => {
         this.validar(produto)
@@ -43,7 +49,7 @@ export default class ProdutoService {
         }else{
             produtos = JSON.parse(produtos)
         }   
-
+        produtos.push(produto)
         localStorage.setItem(PRODUTOS, JSON.stringify(produtos)  )
     }
 }

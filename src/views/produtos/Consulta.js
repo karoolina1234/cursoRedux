@@ -1,11 +1,21 @@
 import React from 'react'
 import NavBar from '../../components/Navbar'
-
+import ProdutoService from '../../app/produtoService'
 export default class ConsultaProdutos extends React.Component{
     state ={
         produtos:[]
     }
+    constructor(){
+        super()
+        this.service = new ProdutoService()
+    }
+    componentDidMount(){
+        const produtos = this.service.obterProdutos();
+        this.setState({produtos})
+    }
+    
     render(){
+        console.log(this.state.produtos)
         return(
             <>
             <NavBar/>
@@ -25,9 +35,9 @@ export default class ConsultaProdutos extends React.Component{
                         </tr>
                     </thead>
                     <tbody>
-                    {this.state.produtos.map( produto =>{
+                    {this.state.produtos.map( (produto , index)=>{
                             return(
-                                <tr>
+                                <tr key={index}>
                                     <td>{produto.nome}</td>
                                     <td>{produto.sku}</td>
                                     <td>{produto.descricao}</td>
