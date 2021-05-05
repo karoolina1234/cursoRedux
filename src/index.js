@@ -7,10 +7,12 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import "bootswatch/dist/cerulean/bootstrap.min.css";
 import CadastroProduto from './views/produtos/Cadastro';
+import  ConsultaProdutos  from './views/produtos/Consulta';
 ReactDOM.render(
   <Router>
     <Route exact path="/cadastro" component={CadastroProduto}/>
     <Route exact path="/" component={App}/>
+    <Route exact path="/consulta" component={ConsultaProdutos}/>
   </Router>
     
   ,

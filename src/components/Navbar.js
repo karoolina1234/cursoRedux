@@ -20,10 +20,10 @@ function NavBar(){
             </Link>
         </li>
         <li class="nav-item">
-            <Link to="/cadastro" class="nav-link" href="#">Cadastro</Link>
+            <Link to="/cadastro" class="nav-link">Cadastro</Link>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">Consulta</a>
+            <Link to="/consulta" class="nav-link">Consulta</Link>
         </li>
         </ul>
     </div>
