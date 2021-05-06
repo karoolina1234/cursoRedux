@@ -65,7 +65,7 @@ class CadastroProduto extends React.Component {
 
         if(resultado.length === 1){
             const produtoEncontrado = resultado[0]
-            this.setState({...produtoEncontrado})
+            this.setState({...produtoEncontrado, atualizando: true})
         }
       }
     }
@@ -75,7 +75,10 @@ class CadastroProduto extends React.Component {
             <>
             <NavBar/>
             <div class="card mb-3">
-                <div class="card-header">Cadastro de produto</div>
+                <div class="card-header">
+                    {this.state.atualizando? 'Atualização ' :'Cadastro '}
+                  de produto
+                    </div>
                 <div class="card-body">
                 <form id="frmProduto" onSubmit={this.onSubmit} >
 
@@ -166,7 +169,7 @@ class CadastroProduto extends React.Component {
                         <div className="row">
                             <div className="col-md-1">
                                 <button type="submit" className="btn btn-success" >
-                                    Salvar
+                                    {this.state.atualizando? 'Atualizar produto': 'Salvar'}
                                 </button>
                             </div>
 
