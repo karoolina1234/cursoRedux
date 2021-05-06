@@ -2,7 +2,7 @@ import React from 'react'
 
 import ProdutoService from '../../app/produtoService'
 import { withRouter } from 'react-router-dom'
-import NavBar from '../../components/Navbar';
+import NavBar from '../../components/Navbar'
 
 const estadoInicial = {
     nome: '',
@@ -54,6 +54,21 @@ class CadastroProduto extends React.Component {
         this.setState(estadoInicial)
     }
 
+    //Função que pega o sku, encontra o produto e carrega seus dados no formulario
+    componentDidMount(){
+      const sku = this.props.match.params.sku
+
+      if(sku){
+        const resultado = this
+        .service
+        .obterProdutos().filter( produto => produto.sku === sku)
+
+        if(resultado.length === 1){
+            const produtoEncontrado = resultado[0]
+            this.setState({...produtoEncontrado})
+        }
+      }
+    }
     
     render(){
         return(
@@ -170,4 +185,4 @@ class CadastroProduto extends React.Component {
 
 }
 
-export default CadastroProduto;
+export default withRouter(CadastroProduto);

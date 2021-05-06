@@ -38,7 +38,16 @@ export default class ProdutoService {
         }
         return JSON.parse(produtos)
     }
-
+    obterIndex = ( sku ) =>{
+        let index = null; // o index inicializa null
+        this.obterProdutos().forEach((produto, i) => {
+            if(produto.sku === sku){ // se o sku do produto for igual ao produto a ser editado
+                index =  i; // o index vai recer o index do produto
+            }
+            
+        });
+        return index
+    }
     salvar = (produto) => {
         this.validar(produto)
 
@@ -49,7 +58,13 @@ export default class ProdutoService {
         }else{
             produtos = JSON.parse(produtos)
         }   
-        produtos.push(produto)
+       const index =  this.obterIndex(produto.sku) // a variavel index recebe o retorno da função obterIndex
+       if(index ===  null){ // se n houver index adiciona o produto normalmente
+            produtos.push(produto)
+       }else{ // se houver index apenas substitua o produto.
+           produtos[index] = produto;
+       }
+       
         localStorage.setItem(PRODUTOS, JSON.stringify(produtos)  )
     }
 }
